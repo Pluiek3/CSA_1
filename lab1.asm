@@ -21,15 +21,15 @@ START:
 	ADD EAX, EBX
 	MOV r, EAX
 	
-        ; --- Вывод результата ---
-        push r                ; второй аргумент: значение r
-        push offset printf    ; первый аргумент: адрес строки формата
-        call crt_printf       ; вызов printf("Result: %d", r)
-        add esp, 8            ; очистка стека (2 аргумента по 4 байта)
+    ; --- Вывод результата ---
+    push r                ; второй аргумент: значение r
+    push offset printf    ; первый аргумент: адрес строки формата
+    call crt_printf       ; вызов printf("Result: %d", r)
+    add esp, 8            ; очистка стека (2 аргумента по 4 байта)
 
-        ; --- Задержка, чтобы увидеть результат ---
-        call crt__getch       ; ожидание нажатия клавиши (getch)
+    ; --- Задержка, чтобы увидеть результат ---
+    call crt__getch       ; ожидание нажатия клавиши (getch)
 
-        push 0
-        call ExitProcess  
+    push 0
+    call ExitProcess  
 END START
