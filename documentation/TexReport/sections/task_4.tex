@@ -1,0 +1,354 @@
+\textbf{Задание 4.} Выполнить пошаговую трассировку программы. Определить какие регистры,  флаги и ячейки памяти изменяют свои значения в процессе выполнения команд. Обеспечить корректное завершение программы вызовом системной функции ExitProcess с кодом завершения 0. Если в сегменте данных есть строки, то вывести её в консоль. Трассировку требуется выполнить до команды «call ExitProcess» включительно. Составить для каждой инструкции таблицу трассировки (как в примере). \label{sec:4}
+
+\begin{table}[H]
+    \centering
+    \caption{Исходное состояние регистров}
+    \label{tab:registers_init}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \cellcolor{blue!30} EAX= & 0019FFCC & \cellcolor{blue!30} EBX= & 0035B000 & \cellcolor{blue!30} ECX= & 00401000 & \cellcolor{blue!30} EDX= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & 0019FF74 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & 00401000 & \multicolumn{6}{c|}{\cellcolor{gray!30}} \\
+    \hline
+    \cellcolor{pink} ZF= & 1 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!30}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!30}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!30}} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 1: xor eax,eax
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{xor eax,eax}}
+    \label{tab:after_xor}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{xor eax,eax}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} 33C0} \\
+    \hline
+    \cellcolor{blue!30} EAX= & \cellcolor{red!70} 00000000 & \cellcolor{blue!30} EBX= & 0035B000 & \cellcolor{blue!30} ECX= & 00401000 & \cellcolor{blue!30} EDX= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & 0019FF74 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 00401002} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & 1 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Обнуляет EAX. EIP увеличивается на 2.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 2: mov ax,word ptr ds:[40300D]
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{mov ax,word ptr ds:[40300D]}}
+    \label{tab:after_mov_ax}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{mov ax,word ptr ds:[40300D]}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} 66:A1 0D304000} \\
+    \hline
+    \cellcolor{blue!30} EAX= & \cellcolor{red!70} 00000005 & \cellcolor{blue!30} EBX= & 0035B000 & \cellcolor{blue!30} ECX= & 00401000 & \cellcolor{blue!30} EDX= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & 0019FF74 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 00401008} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & 1 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Загружает слово из памяти по адресу 40300D в младшую часть EAX (AX = 5). Флаги не меняются. EIP увеличивается на 6.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 3: mov ebx,dword ptr ds:[40300F]
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{mov ebx,dword ptr ds:[40300F]}}
+    \label{tab:after_mov_ebx}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{mov ebx,dword ptr ds:[40300F]}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} 8B1D 0F304000} \\
+    \hline
+    \cellcolor{blue!30} EAX= & 00000005 & \cellcolor{blue!30} EBX= & \cellcolor{red!70} 0000003C & \cellcolor{blue!30} ECX= & 00401000 & \cellcolor{blue!30} EDX= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & 0019FF74 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 0040100E} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & 1 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Загружает двойное слово из памяти по адресу 40300F в EBX (EBX = 60). Флаги не меняются. EIP увеличивается на 6.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 4: add eax,ebx
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{add eax,ebx}}
+    \label{tab:after_add}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{add eax,ebx}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} 03C3} \\
+    \hline
+    \cellcolor{blue!30} EAX= & \cellcolor{red!70} 00000041 & \cellcolor{blue!30} EBX= & 0000003C & \cellcolor{blue!30} ECX= & 00401000 & \cellcolor{blue!30} EDX= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & 0019FF74 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 00401010} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & \cellcolor{red!70} 0 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & \cellcolor{red!70} 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{EAX = EAX + EBX = 5 + 60 = 65 (0x41). ZF=0 (результат не ноль), AF=1 (перенос из 3-го бита). EIP увеличивается на 2.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 5: mov dword ptr ds:[403013],eax
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{mov dword ptr ds:[403013],eax}}
+    \label{tab:after_mov_r}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{mov dword ptr ds:[403013],eax}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} A3 13304000} \\
+    \hline
+    \cellcolor{blue!30} EAX= & 00000041 & \cellcolor{blue!30} EBX= & 0000003C & \cellcolor{blue!30} ECX= & 00401000 & \cellcolor{blue!30} EDX= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & 0019FF74 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 00401015} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & 0 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Записывает EAX (0x41) в память по адресу 403013 (переменная r). Флаги не меняются. EIP увеличивается на 5.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 6: push dword ptr ds:[403013]
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{push dword ptr ds:[403013]}}
+    \label{tab:after_push_r}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{push dword ptr ds:[403013]}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} FF35 13304000} \\
+    \hline
+    \cellcolor{blue!30} EAX= & 00000041 & \cellcolor{blue!30} EBX= & 0000003C & \cellcolor{blue!30} ECX= & 00401000 & \cellcolor{blue!30} EDX= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & \cellcolor{red!70} 0019FF70 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 0040101B} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & 0 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Помещает значение r (0x41) в стек. ESP уменьшается на 4 → 0019FF70. В памяти [0019FF70] = 41 00 00 00. EIP увеличивается на 6.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 7: push lab1.403000
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{push lab1.403000}}
+    \label{tab:after_push_fmt}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{push lab1.403000}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} 68 00304000} \\
+    \hline
+    \cellcolor{blue!30} EAX= & 00000041 & \cellcolor{blue!30} EBX= & 0000003C & \cellcolor{blue!30} ECX= & 00401000 & \cellcolor{blue!30} EDX= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & \cellcolor{red!70} 0019FF6C & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 00401020} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & 0 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Помещает адрес строки формата (00403000) в стек. ESP уменьшается на 4 → 0019FF6C. EIP увеличивается на 5.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 8: call dword ptr ds:[<&printf>]
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{call dword ptr ds:[<\&printf>]}}
+    \label{tab:after_call_printf}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{call dword ptr ds:[<\&printf>]}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} FF15 08204000} \\
+    \hline
+    \cellcolor{blue!30} EAX= & \cellcolor{red!70} 0000000C & \cellcolor{blue!30} EBX= & 0000003C & \cellcolor{blue!30} ECX= & \cellcolor{red!70} BD4B3F15 & \cellcolor{blue!30} EDX= & \cellcolor{red!70} 00000000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & 0019FF6C & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 00401026} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & \cellcolor{red!70} 1 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & \cellcolor{red!70} 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Вызывает \texttt{printf}. Возвращает число выведенных символов: EAX = 0x0C (12). ECX и EDX перезаписаны функцией. На экран выведено: \texttt{"\textbackslash r\textbackslash nResult: 65"}.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 9: add esp,8
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{add esp,8}}
+    \label{tab:after_add_esp}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{add esp,8}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} 83C4 08} \\
+    \hline
+    \cellcolor{blue!30} EAX= & 0000000C & \cellcolor{blue!30} EBX= & 0000003C & \cellcolor{blue!30} ECX= & BD4B3F15 & \cellcolor{blue!30} EDX= & 00000000 \\
+    \hline
+    \cellcolor{blue!30} ESP= & \cellcolor{red!70} 0019FF74 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 00401029} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & \cellcolor{red!70} 0 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & \cellcolor{red!70} 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Очистка стека: ESP увеличивается на 8 → 0019FF74. Флаги ZF=0 (результат не ноль), AF=1. EIP увеличивается на 3.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 10: call dword ptr ds:[<&_getch>]
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{call dword ptr ds:[<\&\_getch>]}}
+    \label{tab:after_call_getch}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{call dword ptr ds:[<\&\_getch>]}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} FF15 0C204000} \\
+    \hline
+    \cellcolor{blue!30} EAX= & \cellcolor{red!70} 0000000D & \cellcolor{blue!30} EBX= & 0000003C & \cellcolor{blue!30} ECX= & \cellcolor{red!70} BD4B3F1D & \cellcolor{blue!30} EDX= & \cellcolor{red!70} 0019FDD0 \\
+    \hline
+    \cellcolor{blue!30} ESP= & 0019FF74 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 0040102F} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & \cellcolor{red!70} 1 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & \cellcolor{red!70} 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Вызывает \texttt{\_getch}. Возвращает код нажатой клавиши в EAX = 0x0D (Enter). ECX и EDX перезаписаны. Флаги изменились внутри функции.} \\
+    \hline
+    \end{tabular}
+\end{table}
+
+% ============================================================
+% После 11: push 0
+% ============================================================
+\begin{table}[H]
+    \centering
+    \caption{Состояние регистров после команды \texttt{push 0}}
+    \label{tab:after_push_0}
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    \multicolumn{5}{|c|}{\cellcolor{green!40}\textbf{\texttt{push 0}}} & \cellcolor{green!20} КОП: & \multicolumn{2}{c|}{\cellcolor{green!20} 6A 00} \\
+    \hline
+    \cellcolor{blue!30} EAX= & 0000000D & \cellcolor{blue!30} EBX= & 0000003C & \cellcolor{blue!30} ECX= & BD4B3F1D & \cellcolor{blue!30} EDX= & 0019FDD0 \\
+    \hline
+    \cellcolor{blue!30} ESP= & \cellcolor{red!70} 0019FF70 & \cellcolor{blue!30} EBP= & 0019FF80 & \cellcolor{blue!30} ESI= & 00401000 & \cellcolor{blue!30} EDI= & 00401000 \\
+    \hline
+    \cellcolor{blue!30} EIP= & \multicolumn{3}{c|}{\cellcolor{red!70} 00401031} & \multicolumn{4}{c|}{} \\
+    \hline
+    \cellcolor{pink} ZF= & 1 & \cellcolor{pink} PF= & 1 & \cellcolor{pink} AF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} OF= & 0 & \cellcolor{pink} SF= & 0 & \cellcolor{pink} DF= & 0 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \cline{1-6}
+    \cellcolor{pink} CF= & 0 & \cellcolor{pink} TF= & 0 & \cellcolor{pink} IF= & 1 & \multicolumn{2}{c|}{\cellcolor{gray!50}} \\
+    \hline
+    \multicolumn{8}{|p{14cm}|}{Помещает в стек код завершения 0. ESP уменьшается на 4 → 0019FF70. Флаги не меняются. EIP увеличивается на 2.} \\
+    \hline
+    \end{tabular}
+\end{table}
